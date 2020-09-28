@@ -48,9 +48,6 @@ export default {
         document.onmousemove = null
         document.onmouseup = null
       }
-    },
-    rightMouseUp () {
-
     }
   }
 }
