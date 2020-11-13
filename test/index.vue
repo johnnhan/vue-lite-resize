@@ -1,9 +1,15 @@
 <template>
   <div id="app">
-    <LiteResize>
-      <div class="resize-content">
-      </div>
-    </LiteResize>
+    <div style="width: 400px; height: 100%; display: flex; flex-direction: column;">
+      <LiteResize
+        style="width: 100%;"
+        dragType="bottom"
+      >
+        <div class="resize-content">
+        </div>
+      </LiteResize>
+      <div class="content"></div>
+    </div>
   </div>
 </template>
 
@@ -15,11 +21,23 @@ export default {
 
 <style lang="less" scoped>
 #app {
-  position: relative;
-}
-.resize-content {
-  width: 100%;
-  height: 100%;
-  background: #ff9999;
+  .lite-resize-item {
+    height: 50%;
+    min-height: 30%;
+    max-height: 80%;
+    flex-shrink: 0;
+  }
+
+  .content {
+    width: 100%;
+    flex-grow: 1;
+    background: #99ff99;
+  }
+
+  .resize-content {
+    width: 100%;
+    height: 100%;
+    background: #ff9999;
+  }
 }
 </style>

@@ -1,9 +1,23 @@
 <template>
-  <div class="resize-item" ref="resizeItem">
+  <div
+    ref="resizeItem"
+    class="lite-resize-item"
+  >
     <slot></slot>
-    <div class="resize-bar right-bar" @mousedown.stop.prevent="rightMouseDown"></div>
-    <div class="resize-bar bottom-bar"></div>
-    <div class="resize-bar right-bottom-bar"></div>
+    <slot name="rightBar">
+      <div
+        v-if="dragType === 'right'"
+        class="resize-bar right-bar"
+        @mousedown.stop.prevent="rightBarMouseDown"
+      ></div>
+    </slot>
+    <slot name="bottomBar">
+      <div
+        v-if="dragType === 'bottom'"
+        class="resize-bar bottom-bar"
+        @mousedown.stop.prevent="bottomBarMouseDown"
+      ></div>
+    </slot>
   </div>
 </template>
 
@@ -11,42 +25,56 @@
 export default {
   name: 'App',
   props: {
-    width: {
-      type: Number,
-      default: 200
-    },
-    height: {
-      type: Number,
-      default: 200
+    dragType: {
+      type: String,
+      default: 'right'
     }
-  },
-  data () {
-    return {
-      minWidth: 10,
-      maxWidth: 0
-    }
-  },
-  mounted () {
-    let item = this.$refs.resizeItem
-    item.style.width = this.width + 'px'
-    item.style.height = this.height + 'px'
-    this.maxWidth = this.$parent.$el.clientWidth
   },
   methods: {
-    rightMouseDown (evt) {
+    /**
+     * @description: 鼠标在右触发器按下时的回调
+     * @param {Object} evt: 鼠标事件对象
+     * @return {undefined}
+     */    
+    rightBarMouseDown (evt) {
+      if (this.dragType !== 'right') return
       let item = this.$refs.resizeItem
       let originWidth = item.clientWidth
       let originMouseX = evt.clientX
       document.onmousemove = (e) => {
+        e.stopPropagation()
         let curMouseX = e.clientX
         let finalWidth = originWidth + curMouseX - originMouseX
-        finalWidth < this.minWidth && (finalWidth = this.minWidth)
-        finalWidth > this.maxWidth && (finalWidth = this.maxWidth)
         item.style.width = finalWidth + 'px'
       }
-      document.onmouseup = () => {
+      document.onmouseup = (e) => {
+        e.stopPropagation()
         document.onmousemove = null
         document.onmouseup = null
+        this.$emit('resize-end')
+      }
+    },
+    /**
+     * @description: 鼠标在下触发器按下时的回调
+     * @param {Object} evt：鼠标事件对象
+     * @return {undefined}
+     */    
+    bottomBarMouseDown (evt) {
+      if (this.dragType !== 'bottom') return
+      let item = this.$refs.resizeItem
+      let originHeight = item.clientHeight
+      let originMouseY = evt.clientY
+      document.onmousemove = (e) => {
+        e.stopPropagation()
+        let curMouseY = e.clientY
+        let finalHeight = originHeight + curMouseY - originMouseY
+        item.style.height = finalHeight + 'px'
+      }
+      document.onmouseup = (e) => {
+        e.stopPropagation()
+        document.onmousemove = null
+        document.onmouseup = null
+        this.$emit('resize-end')
       }
     }
   }
@@ -54,38 +82,31 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@bar-width: 5px;
-@bar-height: 5px;
+@bar-width: 10px;
+@bar-height: 10px;
 
-.resize-item {
-  position: absolute;
+.lite-resize-item {
+  position: relative;
 
   .resize-bar {
+    background-color: rgba(0, 0, 255, 0.2);
     position: absolute;
   }
   
   .right-bar {
     height: 100%;
     width: @bar-width;
-    right: 0;
+    right: -(@bar-width/2);
     top: 0;
-    cursor: ew-resize;
+    cursor: col-resize;
   }
 
   .bottom-bar {
     height: @bar-height;
     width: 100%;
     left: 0;
-    bottom: 0;
-    cursor: ns-resize;
-  }
-
-  .right-bottom-bar {
-    height: @bar-height;
-    width: @bar-width;
-    right: 0;
-    bottom: 0;
-    cursor: nwse-resize;
+    bottom: -(@bar-height/2);
+    cursor: row-resize;
   }
 }
 </style>
