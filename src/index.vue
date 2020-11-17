@@ -28,6 +28,10 @@ export default {
     dragType: {
       type: String,
       default: 'right'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -37,7 +41,7 @@ export default {
      * @return {undefined}
      */    
     rightBarMouseDown (evt) {
-      if (this.dragType !== 'right') return
+      if (this.dragType !== 'right' || this.disabled) return
       let item = this.$refs.resizeItem
       let originWidth = item.clientWidth
       let originMouseX = evt.clientX
@@ -45,7 +49,9 @@ export default {
         e.stopPropagation()
         let curMouseX = e.clientX
         let finalWidth = originWidth + curMouseX - originMouseX
-        item.style.width = finalWidth + 'px'
+        requestAnimationFrame(() => {
+          item.style.width = finalWidth + 'px'
+        })
       }
       document.onmouseup = (e) => {
         e.stopPropagation()
@@ -60,7 +66,7 @@ export default {
      * @return {undefined}
      */    
     bottomBarMouseDown (evt) {
-      if (this.dragType !== 'bottom') return
+      if (this.dragType !== 'bottom' || this.disabled) return
       let item = this.$refs.resizeItem
       let originHeight = item.clientHeight
       let originMouseY = evt.clientY
@@ -68,7 +74,9 @@ export default {
         e.stopPropagation()
         let curMouseY = e.clientY
         let finalHeight = originHeight + curMouseY - originMouseY
-        item.style.height = finalHeight + 'px'
+        requestAnimationFrame(() => {
+          item.style.height = finalHeight + 'px'
+        })
       }
       document.onmouseup = (e) => {
         e.stopPropagation()
@@ -89,8 +97,8 @@ export default {
   position: relative;
 
   .resize-bar {
-    background-color: rgba(0, 0, 255, 0.2);
     position: absolute;
+    z-index: 1;
   }
   
   .right-bar {
