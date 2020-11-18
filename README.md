@@ -11,7 +11,7 @@
 
 | 属性 | 类型 | 默认值 | 描述 |
 | -- | -- | -- | -- |
-| dragType | String | 'right' | 缩放类型，'right' 表示右缩放，'left' 表示左缩放 |
+| resizeType | String | 'right' | 缩放类型，'right' 表示右缩放，'bottom' 表示下缩放 |
 | disabled | Boolean | false | 是否禁用缩放 |
 
 ### 插槽
