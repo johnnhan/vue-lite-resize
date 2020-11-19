@@ -6,7 +6,10 @@
       @mousedown.stop.prevent="rightBarMouseDown"
     >
       <slot name="rightBar">
-        <div class="resize-bar right-bar"></div>
+        <div
+            v-if="!disabled"
+            class="resize-bar right-bar"
+        ></div>
       </slot>
     </div>
     <div
@@ -14,7 +17,10 @@
       @mousedown.stop.prevent="bottomBarMouseDown"
     >
       <slot name="bottomBar">
-        <div class="resize-bar bottom-bar"></div>
+        <div
+            v-if="!disabled"
+            class="resize-bar bottom-bar"
+        ></div>
       </slot>
     </div>
   </div>
